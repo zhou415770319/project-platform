@@ -16,3 +16,6 @@
 *.log
 .DS_Store
 Thumbs.db
+
+# 误建的嵌套仓库（空），忽略，避免被子模块追踪
+/project-platform/
