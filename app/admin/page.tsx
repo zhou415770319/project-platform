@@ -39,8 +39,11 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [authed, setAuthed] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [form, setForm] = useState<Project>(emptyForm());
+
+  // 弹框
+  const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState<Project>(emptyForm());
 
   // 鉴权 + 加载全部数据
   useEffect(() => {
@@ -58,7 +61,9 @@ export default function AdminPage() {
       const cipher = await privRes.text();
       const priv = tryDecryptProjects(cipher, key) ?? [];
 
-      setProjects([...pub, ...priv].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)));
+      setProjects(
+        [...pub, ...priv].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+      );
       setLoading(false);
     })();
   }, [router]);
@@ -66,15 +71,21 @@ export default function AdminPage() {
   const set = (field: keyof Project, value: string) =>
     setForm((f) => ({ ...f, [field]: value }));
 
-  const startAdd = () => {
+  // —— 弹框操作 ——
+  const openAdd = () => {
     setEditing(false);
     setForm(emptyForm());
+    setModalOpen(true);
   };
 
-  const startEdit = (p: Project) => {
+  const openEdit = (p: Project) => {
     setEditing(true);
     setForm({ ...p });
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
   };
 
   const submit = (e: React.FormEvent) => {
@@ -93,11 +104,11 @@ export default function AdminPage() {
         ...list,
       ]);
     }
-    startAdd();
+    closeModal();
   };
 
   const remove = (id: string) => {
-    if (confirm("确定删除该项目？该操作仅影响本地导出，未提交不会影响线上。")) {
+    if (confirm("确定删除该项目？删除仅影响本地数据，未导出提交不会影响线上。")) {
       setProjects((list) => list.filter((p) => p.id !== id));
     }
   };
@@ -129,7 +140,7 @@ export default function AdminPage() {
       <div className="admin-toolbar">
         <h1>项目管理后台</h1>
         <div style={{ display: "flex", gap: 10 }}>
-          <button className="btn-secondary" onClick={startAdd}>
+          <button className="btn-primary" onClick={openAdd}>
             ＋ 新增项目
           </button>
           <button className="btn-secondary" onClick={exportRaw}>
@@ -141,154 +152,13 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* 表单 */}
-      <div className="form-card">
-        <div className="field-label">{editing ? `编辑项目：${form.name}` : "新增项目"}</div>
-        <form onSubmit={submit}>
-          <div className="form-grid">
-            <div>
-              <label>项目名称 *</label>
-              <input
-                className="field"
-                value={form.name}
-                onChange={(e) => set("name", e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label>项目 ID（留空自动生成）</label>
-              <input
-                className="field"
-                value={form.id}
-                onChange={(e) => set("id", e.target.value)}
-                disabled={editing}
-              />
-            </div>
-            <div className="full">
-              <label>封面图 URL</label>
-              <input
-                className="field"
-                value={form.cover}
-                onChange={(e) => set("cover", e.target.value)}
-                placeholder="图床 / COS 链接，可留空"
-              />
-            </div>
-            <div className="full">
-              <label>简短简介 *（首页卡片）</label>
-              <input
-                className="field"
-                value={form.shortDesc}
-                onChange={(e) => set("shortDesc", e.target.value)}
-                required
-              />
-            </div>
-            <div className="full">
-              <label>详细描述 *</label>
-              <textarea
-                className="field"
-                rows={5}
-                value={form.description}
-                onChange={(e) => set("description", e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label>项目进度</label>
-              <select
-                className="field"
-                value={form.status}
-                onChange={(e) => set("status", e.target.value as ProjectStatus)}
-              >
-                {STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {STATUS_LABEL[s]}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label>开发工具（默认 workbuddy）</label>
-              <input
-                className="field"
-                value={form.devTool}
-                onChange={(e) => set("devTool", e.target.value)}
-              />
-            </div>
-            <div className="full">
-              <label>后续计划</label>
-              <textarea
-                className="field"
-                rows={2}
-                value={form.nextPlan}
-                onChange={(e) => set("nextPlan", e.target.value)}
-              />
-            </div>
-            <div className="full">
-              <label>项目访问链接</label>
-              <input
-                className="field"
-                value={form.projectUrl}
-                onChange={(e) => set("projectUrl", e.target.value)}
-                placeholder="https://…"
-              />
-            </div>
-            <div className="full">
-              <label>源码 GitHub 链接</label>
-              <input
-                className="field"
-                value={form.sourceUrl}
-                onChange={(e) => set("sourceUrl", e.target.value)}
-                placeholder="https://github.com/…"
-              />
-            </div>
-            <div className="full">
-              <label>技术文档链接（公众号开放平台）</label>
-              <input
-                className="field"
-                value={form.docUrl}
-                onChange={(e) => set("docUrl", e.target.value)}
-                placeholder="https://…"
-              />
-            </div>
-            <div className="full">
-              <label>推广链接（知乎）</label>
-              <input
-                className="field"
-                value={form.zhihuPromoteUrl}
-                onChange={(e) => set("zhihuPromoteUrl", e.target.value)}
-                placeholder="https://…"
-              />
-            </div>
-            <div className="full">
-              <label>获客账号（小红书）</label>
-              <input
-                className="field"
-                value={form.xiaohongshuAcc}
-                onChange={(e) => set("xiaohongshuAcc", e.target.value)}
-                placeholder="https://…"
-              />
-            </div>
-          </div>
-          <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
-            <button type="submit" className="btn-primary">
-              {editing ? "保存修改" : "添加项目"}
-            </button>
-            {editing && (
-              <button type="button" className="btn-secondary" onClick={startAdd}>
-                取消编辑
-              </button>
-            )}
-          </div>
-        </form>
-      </div>
-
       {/* 项目列表 */}
       <div className="section-title">
         <span>项目列表</span>
         <span className="note">{projects.length} 个</span>
       </div>
       {projects.length === 0 ? (
-        <div className="empty">暂无项目，先在上方添加。</div>
+        <div className="empty">暂无项目，点击右上角「新增项目」添加。</div>
       ) : (
         <div className="proj-list">
           {projects.map((p) => (
@@ -303,7 +173,7 @@ export default function AdminPage() {
                 <div className="proj-row-desc">{p.shortDesc}</div>
               </div>
               <div className="proj-row-actions">
-                <button className="btn-secondary" onClick={() => startEdit(p)}>
+                <button className="btn-secondary" onClick={() => openEdit(p)}>
                   编辑
                 </button>
                 <button className="btn-danger" onClick={() => remove(p.id)}>
@@ -312,6 +182,90 @@ export default function AdminPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* 新增 / 编辑 弹框 */}
+      {modalOpen && (
+        <div className="modal-overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) closeModal(); }}>
+          <div className="modal">
+            <div className="modal-header">
+              <h2>{editing ? "编辑项目" : "新增项目"}</h2>
+              <button className="modal-close" onClick={closeModal} aria-label="关闭">
+                ×
+              </button>
+            </div>
+            <form onSubmit={submit}>
+              <div className="modal-body">
+                <div className="form-grid">
+                  <div>
+                    <label>项目名称 *</label>
+                    <input className="field" value={form.name} onChange={(e) => set("name", e.target.value)} required />
+                  </div>
+                  <div>
+                    <label>项目 ID（留空自动生成）</label>
+                    <input className="field" value={form.id} onChange={(e) => set("id", e.target.value)} disabled={editing} />
+                  </div>
+                  <div className="full">
+                    <label>封面图 URL</label>
+                    <input className="field" value={form.cover} onChange={(e) => set("cover", e.target.value)} placeholder="图床 / COS 链接，可留空" />
+                  </div>
+                  <div className="full">
+                    <label>简短简介 *（首页卡片）</label>
+                    <input className="field" value={form.shortDesc} onChange={(e) => set("shortDesc", e.target.value)} required />
+                  </div>
+                  <div className="full">
+                    <label>详细描述 *</label>
+                    <textarea className="field" rows={4} value={form.description} onChange={(e) => set("description", e.target.value)} required />
+                  </div>
+                  <div>
+                    <label>项目进度</label>
+                    <select className="field" value={form.status} onChange={(e) => set("status", e.target.value as ProjectStatus)}>
+                      {STATUSES.map((s) => (
+                        <option key={s} value={s}>{STATUS_LABEL[s]}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label>开发工具（默认 workbuddy）</label>
+                    <input className="field" value={form.devTool} onChange={(e) => set("devTool", e.target.value)} />
+                  </div>
+                  <div className="full">
+                    <label>后续计划</label>
+                    <textarea className="field" rows={2} value={form.nextPlan} onChange={(e) => set("nextPlan", e.target.value)} />
+                  </div>
+                  <div className="full">
+                    <label>项目访问链接</label>
+                    <input className="field" value={form.projectUrl} onChange={(e) => set("projectUrl", e.target.value)} placeholder="https://…" />
+                  </div>
+                  <div className="full">
+                    <label>源码 GitHub 链接</label>
+                    <input className="field" value={form.sourceUrl} onChange={(e) => set("sourceUrl", e.target.value)} placeholder="https://github.com/…" />
+                  </div>
+                  <div className="full">
+                    <label>技术文档链接（公众号开放平台）</label>
+                    <input className="field" value={form.docUrl} onChange={(e) => set("docUrl", e.target.value)} placeholder="https://…" />
+                  </div>
+                  <div className="full">
+                    <label>推广链接（知乎）</label>
+                    <input className="field" value={form.zhihuPromoteUrl} onChange={(e) => set("zhihuPromoteUrl", e.target.value)} placeholder="https://…" />
+                  </div>
+                  <div className="full">
+                    <label>获客账号（小红书）</label>
+                    <input className="field" value={form.xiaohongshuAcc} onChange={(e) => set("xiaohongshuAcc", e.target.value)} placeholder="https://…" />
+                  </div>
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn-secondary" onClick={closeModal}>
+                  取消
+                </button>
+                <button type="submit" className="btn-primary">
+                  {editing ? "保存修改" : "添加项目"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
 
