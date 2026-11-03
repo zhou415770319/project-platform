@@ -1,0 +1,36 @@
+[
+  {
+    "id": "life-os",
+    "name": "Life OS 全栈插件平台",
+    "cover": "",
+    "shortDesc": "一个把日程、习惯、知识库打通的个人效率全栈平台，支持浏览器插件与定时任务。",
+    "description": "Life OS 是一个面向个人效率的全栈插件平台，整合日程管理、习惯打卡、知识库与自动化任务，前端基于 React / Next.js，后端基于 NestJS，支持浏览器插件和云端定时任务。通过 Coze 工作流与影刀 RPA 集成，把重复性操作自动化，帮助用户把零散工具收敛到一个入口。",
+    "status": "FULL_RELEASE",
+    "nextPlan": "迭代方向：新增多端数据同步、AI 复盘周报、开放插件市场。",
+    "projectUrl": "https://example.com/life-os",
+    "sourceUrl": "https://github.com/yourname/life-os",
+    "devTool": "workbuddy",
+    "docUrl": "https://mp.weixin.qq.com/你的公众号文章链接",
+    "zhihuPromoteUrl": "https://www.zhihu.com/你的知乎文章链接",
+    "xiaohongshuAcc": "https://www.xiaohongshu.com/你的小红书主页链接",
+    "createdAt": "2026-01-10T00:00:00.000Z",
+    "updatedAt": "2026-10-20T00:00:00.000Z"
+  },
+  {
+    "id": "kid-paradise",
+    "name": "童趣乐园积分系统",
+    "cover": "",
+    "shortDesc": "面向孩子的积分奖励小游戏平台，用积分激励好习惯，家长后台可控。",
+    "description": "童趣乐园积分系统是一款面向 7-8 岁孩子的习惯激励小游戏，孩子完成打卡获得积分、兑换奖励。基于 Unity 小游戏 + Web 后台，家长端可配置奖励规则、查看成长报告，支持多设备定时播放提醒。",
+    "status": "MVP",
+    "nextPlan": "规划中：加入 AI 成长分析、多孩家庭支持、移动端小程序。",
+    "projectUrl": "https://example.com/kid-paradise",
+    "sourceUrl": "https://github.com/yourname/kid-paradise",
+    "devTool": "workbuddy",
+    "docUrl": "https://mp.weixin.qq.com/你的公众号文章链接",
+    "zhihuPromoteUrl": "https://www.zhihu.com/你的知乎文章链接",
+    "xiaohongshuAcc": "https://www.xiaohongshu.com/你的小红书主页链接",
+    "createdAt": "2026-03-05T00:00:00.000Z",
+    "updatedAt": "2026-09-12T00:00:00.000Z"
+  }
+]

@@ -1,0 +1,18 @@
+# dependencies
+/node_modules
+
+# next.js 构建产物
+/.next/
+/out/
+
+# 本地环境变量（含管理员密码，绝不提交）
+.env*.local
+.env.local
+
+# 明文项目数据（绝不提交，只存在于本地）
+/data/projects.raw.json
+
+# 日志 / 系统
+*.log
+.DS_Store
+Thumbs.db
