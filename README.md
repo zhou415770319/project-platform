@@ -2,7 +2,7 @@
 
 一个部署在 **腾讯 EdgeOne** 上的个人项目作品集平台。源码托管在 GitHub，支持后台管理项目信息，通过「登录可见」控制开发中项目对访客的展示。
 
-## 功能特性
+## 1 功能特性
 
 - **项目展示**：首页卡片列表 + 详情页，展示项目简介、详细描述、进度、后续计划、项目链接、源码链接。
 - **进度管理**：立项 / 功能开发 / MVP版 / 完整版 四档进度。
@@ -16,7 +16,7 @@
 
 ---
 
-## 目录结构
+## 2 目录结构
 
 ```
 project-platform/
@@ -45,7 +45,7 @@ project-platform/
 
 ---
 
-## 本地运行
+## 3 本地运行
 
 ```bash
 npm install          # 安装依赖
@@ -60,7 +60,7 @@ npm run build-data   # 重新生成 public 下的公开JSON + 私密JSON
 
 ---
 
-## 管理员登录与后台
+## 4 管理员登录与后台
 
 1. 打开 `http://localhost:3000/login`，输入管理员密码（默认 `Zhou@123456`）。
 2. 登录后进入 **后台管理**（`/admin`）：
@@ -69,12 +69,12 @@ npm run build-data   # 重新生成 public 下的公开JSON + 私密JSON
    - **导入数据**：选择别的项目导出的 JSON（数组 或 `{projects:[...]}`），按 id 合并（同 id 覆盖、新 id 追加）；
    - **导出数据**：下载 `projects.raw.json` 用于本地数据源 / 备份 / 迁移。
 
-### 后台的「在线修改」说明
+### 4.1 后台的「在线修改」说明
 平台是**纯静态部署**（无后端数据库），后台修改在浏览器内完成，需通过「导出 → 覆盖 `data/projects.raw.json` → `npm run build-data` → 推送 main」三步上线（后台有步骤提示）。
 
 ---
 
-## 数据与账号安全说明
+## 5 数据与账号安全说明
 
 | 数据 | 存放位置 | 访客可见？ |
 |---|---|---|
@@ -86,9 +86,9 @@ npm run build-data   # 重新生成 public 下的公开JSON + 私密JSON
 
 ---
 
-## 部署到 GitHub + 腾讯 EdgeOne
+## 6 部署到 GitHub + 腾讯 EdgeOne
 
-### 1. 上传源码到 GitHub
+### 6.1 上传源码到 GitHub
 
 ```bash
 git init
@@ -101,7 +101,7 @@ git push -u origin main
 
 > 提交前确认：`.env.local`、`data/projects.raw.json` 已被 `.gitignore` 忽略；`public/projects.public.json`、`public/projects.private.json` 会被提交（这是线上数据）。
 
-### 2. 腾讯 EdgeOne 部署
+### 6.2 腾讯 EdgeOne 部署
 
 本平台纯静态（`output: "export"`），EdgeOne 仅需托管静态文件：
 
@@ -114,12 +114,12 @@ git push -u origin main
 1. `npm run build` 生成 `out/`。
 2. 在 EdgeOne 静态托管上传 `out/` 目录内容，绑定域名。
 
-### 3. 部署触发机制（回答你的问题）
+### 6.3 部署触发机制（回答你的问题）
 - **是：只有推送到 `main` 分支才会触发重新部署。**
 - 每次 push 到 `main` → EdgeOne 自动拉取代码、构建、发布；push 到其他分支不会触发线上部署。
 - 建议在开发分支改代码，确认无误后合并/推送 `main` 再上线。
 
-### 4. 每次更新项目的完整流程
+### 6.4 每次更新项目的完整流程
 
 ```
 后台编辑/导入 → 导出 projects.raw.json → 覆盖 data/projects.raw.json
@@ -128,7 +128,7 @@ git push -u origin main
 
 ---
 
-## 修改管理员密码
+## 7 修改管理员密码
 
 1. 计算新密码的 SHA-256：本地执行
    ```bash
@@ -142,7 +142,7 @@ git push -u origin main
 
 ---
 
-## 常见问题
+## 8 常见问题
 
 - **登录提示密码错误**：确认 `lib/account.ts` 的 `ADMIN_HASH` 与当前密码一致。
 - **新增项目线上看不到**：确认执行了 `npm run build-data` 且提交了两个 `public/*` 文件并推到 main。

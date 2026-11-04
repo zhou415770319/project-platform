@@ -6,12 +6,13 @@ import { clearSession, getSession } from "@/lib/session";
 import {
   STATUS_BADGE,
   STATUS_LABEL,
+  type PlatformLink,
   type Project,
-  type ProjectScreenshot,
   type ProjectStatus,
 } from "@/types/project";
 
 const STATUSES: ProjectStatus[] = ["INIT", "DEV", "MVP", "FULL_RELEASE"];
+const PLATFORMS = ["GitHub", "微信公众号", "知乎", "小红书", "网站", "其他"];
 
 function emptyForm(): Project {
   const now = new Date().toISOString();
@@ -20,46 +21,46 @@ function emptyForm(): Project {
     name: "",
     cover: "",
     screenshots: [],
+    links: [],
     shortDesc: "",
     description: "",
     status: "INIT",
     nextPlan: "",
-    projectUrl: "",
-    sourceUrl: "",
     devTool: "workbuddy",
-    docUrl: "",
-    zhihuPromoteUrl: "",
-    xiaohongshuAcc: "",
     createdAt: now,
     updatedAt: now,
   };
 }
 
-/** 截图文本（每行：图片URL，可选 | 说明）→ 结构化数组 */
-function parseScreenshots(text: string): ProjectScreenshot[] {
-  return text
-    .split("\n")
-    .map((l) => l.trim())
-    .filter(Boolean)
-    .map((l) => {
-      const idx = l.indexOf("|");
-      if (idx === -1) return { src: l };
-      return { src: l.slice(0, idx).trim(), name: l.slice(idx + 1).trim() };
-    });
-}
-
-/** 解析导入的 JSON：接受 数组 或 { projects: [...] } */
-function normalizeIncoming(raw: unknown): Project[] {
-  if (Array.isArray(raw)) return raw as Project[];
-  if (raw && typeof raw === "object" && Array.isArray((raw as any).projects)) {
-    return (raw as any).projects as Project[];
-  }
-  return [];
+/** 读取图片并压缩为 dataURL（限制最大边长，控制体积） */
+function fileToDataUrl(file: File, maxDim = 1280, quality = 0.85): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        const scale = Math.min(1, maxDim / Math.max(width, height));
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d")!.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.onerror = reject;
+      img.src = reader.result as string;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 export default function AdminPage() {
   const router = useRouter();
-  const fileRef = useRef<HTMLInputElement>(null);
+  const shotFileRef = useRef<HTMLInputElement>(null);
+  const importRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(true);
   const [authed, setAuthed] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -102,7 +103,7 @@ export default function AdminPage() {
   };
   const openEdit = (p: Project) => {
     setEditing(true);
-    setForm({ ...p });
+    setForm({ ...p, screenshots: p.screenshots ?? [], links: p.links ?? [] });
     setModalOpen(true);
   };
   const closeModal = () => setModalOpen(false);
@@ -132,6 +133,62 @@ export default function AdminPage() {
     }
   };
 
+  // —— 截图：上传 / 删除 / 改名 / 手动URL ——
+  const onUploadShots = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    e.target.value = "";
+    for (const file of files) {
+      try {
+        const src = await fileToDataUrl(file);
+        setForm((f) => ({
+          ...f,
+          screenshots: [...(f.screenshots ?? []), { src, name: file.name.replace(/\.[^.]+$/, "") }],
+        }));
+      } catch {
+        alert(`上传失败：${file.name}`);
+      }
+    }
+  };
+  const removeShot = (i: number) =>
+    setForm((f) => ({
+      ...f,
+      screenshots: (f.screenshots ?? []).filter((_, idx) => idx !== i),
+    }));
+  const renameShot = (i: number, name: string) =>
+    setForm((f) => ({
+      ...f,
+      screenshots: (f.screenshots ?? []).map((s, idx) =>
+        idx === i ? { ...s, name } : s
+      ),
+    }));
+  const appendUrlShot = (url: string) => {
+    const u = url.trim();
+    if (!u) return;
+    setForm((f) => ({
+      ...f,
+      screenshots: [...(f.screenshots ?? []), { src: u }],
+    }));
+  };
+
+  // —— 平台链路：增 / 改 / 删 ——
+  const addLink = () =>
+    setForm((f) => ({
+      ...f,
+      links: [...(f.links ?? []), { platform: "GitHub", title: "", url: "" }],
+    }));
+  const setLink = (i: number, field: keyof PlatformLink, value: string) =>
+    setForm((f) => ({
+      ...f,
+      links: (f.links ?? []).map((l, idx) =>
+        idx === i ? { ...l, [field]: value } : l
+      ),
+    }));
+  const removeLink = (i: number) =>
+    setForm((f) => ({
+      ...f,
+      links: (f.links ?? []).filter((_, idx) => idx !== i),
+    }));
+
   // —— 导入数据（支持从别的项目导出的 JSON 合并进来）——
   const onImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -139,7 +196,8 @@ export default function AdminPage() {
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        const incoming = normalizeIncoming(JSON.parse(reader.result as string));
+        const raw = JSON.parse(reader.result as string);
+        const incoming: Project[] = Array.isArray(raw) ? raw : (raw as any).projects ?? [];
         if (incoming.length === 0) throw new Error("empty");
         setProjects((list) => {
           const map = new Map(list.map((p) => [p.id, p]));
@@ -169,7 +227,7 @@ export default function AdminPage() {
     e.target.value = "";
   };
 
-  // —— 导出明文 JSON（数据源 / 同步）——
+  // —— 导出明文 JSON ——
   const exportRaw = () => {
     const blob = new Blob([JSON.stringify(projects, null, 2)], {
       type: "application/json",
@@ -199,7 +257,7 @@ export default function AdminPage() {
           <button className="btn-primary" onClick={openAdd}>
             ＋ 新增项目
           </button>
-          <button className="btn-secondary" onClick={() => fileRef.current?.click()}>
+          <button className="btn-secondary" onClick={() => importRef.current?.click()}>
             导入数据
           </button>
           <button className="btn-secondary" onClick={exportRaw}>
@@ -211,7 +269,7 @@ export default function AdminPage() {
         </div>
       </div>
       <input
-        ref={fileRef}
+        ref={importRef}
         type="file"
         accept="application/json,.json"
         style={{ display: "none" }}
@@ -279,16 +337,56 @@ export default function AdminPage() {
                     <label>封面图 URL</label>
                     <input className="field" value={form.cover} onChange={(e) => set("cover", e.target.value)} placeholder="图床 / COS 链接，或 /screenshots/xxx.png，可留空" />
                   </div>
+
+                  {/* 项目截图：上传 + 删除 */}
                   <div className="full">
-                    <label>项目截图（每行一条：图片URL，可选用「|」加说明）</label>
-                    <textarea
-                      className="field"
-                      rows={5}
-                      value={form.screenshots?.map((s) => (s.name ? `${s.src} | ${s.name}` : s.src)).join("\n") ?? ""}
-                      onChange={(e) => set("screenshots", parseScreenshots(e.target.value))}
-                      placeholder={"/screenshots/childpoints-1.png | 登录页"}
+                    <label>项目截图（支持上传本地图片、手动填 URL；每张可写说明、可删除）</label>
+                    <div className="shot-upload-row">
+                      <button type="button" className="btn-secondary" onClick={() => shotFileRef.current?.click()}>
+                        📁 上传截图
+                      </button>
+                      <input
+                        className="field"
+                        placeholder="或填图片 URL，回车添加"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            appendUrlShot((e.target as HTMLInputElement).value);
+                            (e.target as HTMLInputElement).value = "";
+                          }
+                        }}
+                      />
+                    </div>
+                    <input
+                      ref={shotFileRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      style={{ display: "none" }}
+                      onChange={onUploadShots}
                     />
+                    {form.screenshots && form.screenshots.length > 0 ? (
+                      <div className="shot-manage">
+                        {form.screenshots.map((s, i) => (
+                          <div className="shot-manage-item" key={i}>
+                            <img src={s.src} alt="" />
+                            <input
+                              className="field"
+                              value={s.name ?? ""}
+                              placeholder="截图说明（可选）"
+                              onChange={(e) => renameShot(i, e.target.value)}
+                            />
+                            <button type="button" className="btn-danger" onClick={() => removeShot(i)}>
+                              删除
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="hint">尚未添加截图，可点击「上传截图」选择本地图片，或手动填写 /screenshots/xxx.png 链接。</p>
+                    )}
                   </div>
+
                   <div className="full">
                     <label>简短简介 *（首页卡片）</label>
                     <input className="field" value={form.shortDesc} onChange={(e) => set("shortDesc", e.target.value)} required />
@@ -313,25 +411,45 @@ export default function AdminPage() {
                     <label>后续计划</label>
                     <textarea className="field" rows={2} value={form.nextPlan} onChange={(e) => set("nextPlan", e.target.value)} />
                   </div>
+
+                  {/* 平台链路：动态添加 */}
                   <div className="full">
-                    <label>项目访问链接</label>
-                    <input className="field" value={form.projectUrl} onChange={(e) => set("projectUrl", e.target.value)} placeholder="https://…" />
-                  </div>
-                  <div className="full">
-                    <label>源码 GitHub 链接</label>
-                    <input className="field" value={form.sourceUrl} onChange={(e) => set("sourceUrl", e.target.value)} placeholder="https://github.com/…" />
-                  </div>
-                  <div className="full">
-                    <label>技术文档链接（公众号开放平台）</label>
-                    <input className="field" value={form.docUrl} onChange={(e) => set("docUrl", e.target.value)} placeholder="https://…" />
-                  </div>
-                  <div className="full">
-                    <label>推广链接（知乎）</label>
-                    <input className="field" value={form.zhihuPromoteUrl} onChange={(e) => set("zhihuPromoteUrl", e.target.value)} placeholder="https://…" />
-                  </div>
-                  <div className="full">
-                    <label>获客账号（小红书）</label>
-                    <input className="field" value={form.xiaohongshuAcc} onChange={(e) => set("xiaohongshuAcc", e.target.value)} placeholder="https://…" />
+                    <label>平台链路（源码 / 文档 / 推广 / 获客等，支持动态添加多条）</label>
+                    {form.links && form.links.length > 0 && (
+                      <div className="link-manage">
+                        {form.links.map((l, i) => (
+                          <div className="link-manage-row" key={i}>
+                            <select
+                              className="field link-select"
+                              value={l.platform}
+                              onChange={(e) => setLink(i, "platform", e.target.value)}
+                            >
+                              {PLATFORMS.map((p) => (
+                                <option key={p} value={p}>{p}</option>
+                              ))}
+                            </select>
+                            <input
+                              className="field link-title"
+                              value={l.title}
+                              placeholder="标题，如：源码仓库"
+                              onChange={(e) => setLink(i, "title", e.target.value)}
+                            />
+                            <input
+                              className="field link-url"
+                              value={l.url}
+                              placeholder="https://…"
+                              onChange={(e) => setLink(i, "url", e.target.value)}
+                            />
+                            <button type="button" className="btn-danger" onClick={() => removeLink(i)}>
+                              删除
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <button type="button" className="btn-secondary" onClick={addLink}>
+                      ＋ 添加链接
+                    </button>
                   </div>
                 </div>
               </div>

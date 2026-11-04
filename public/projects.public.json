@@ -33,16 +33,23 @@
         "name": "插件调用 · 场景提示引导"
       }
     ],
+    "links": [
+      {
+        "platform": "GitHub",
+        "title": "源码仓库",
+        "url": "https://github.com/zhou415770319/life-os-platform"
+      },
+      {
+        "platform": "GitHub",
+        "title": "插件仓库",
+        "url": "https://github.com/zhou415770319/life-os-plugins"
+      }
+    ],
     "shortDesc": "以插件为核心的个人管理平台，插件化扩展 + 全局 AI 助手（本地 BYOK），对接飞书多维表格 + 影刀 RPA + 本地 Excel。已发布 v1.0.0。",
     "description": "一个以插件为核心的个人管理平台，参考 harness 的插件机制（DSH 动态服务宿主），每个插件都是一套独立的子系统，主壳只提供看板与运行时；覆盖目标管理、微习惯养成、GTD 任务、番茄专注、时间黑洞分析与复盘面板。AI 模型支持本地 BYOK（自带密钥）配置，可接入多个 OpenAI 兼容模型平台，密钥仅保存在本地。插件可携带云函数（server.js）作为后端能力，装载时由宿主动态注册进后端服务，卸载即注销；插件对外暴露的方法可直接被全局 AI 助手通过对话调用。插件可复用平台提供的集成能力：自研项目管理插件对接飞书多维表格读取项目信息，指令状态变化时联动本机影刀 RPA 流程执行并回填结果；插件也可直接读取、修改本地 Excel 文件；插件页面可导出自包含 HTML，经 ShareOne 生成分享链接作为网页对外发布。简单插件可由 AI 助手对话生成，复杂插件参照内置插件开发指南、借助 AI 工具修改源代码实现；完成的插件可提交到插件市场，仅发布插件包、不含本地数据。系统所有数据保存在本地，支持按模块 / 插件勾选导出备份与导入还原。",
     "status": "FULL_RELEASE",
     "nextPlan": "持续迭代：丰富插件市场生态，优化 AI 助手深度模式与跨会话记忆。",
-    "projectUrl": "",
-    "sourceUrl": "https://github.com/zhou415770319/life-os-platform",
     "devTool": "workbuddy",
-    "docUrl": "https://github.com/zhou415770319/life-os-plugins",
-    "zhihuPromoteUrl": "",
-    "xiaohongshuAcc": "",
     "createdAt": "2026-01-10T00:00:00.000Z",
     "updatedAt": "2026-10-28T00:00:00.000Z"
   },
@@ -84,16 +91,23 @@
         "name": "任务详情 · AI 评分点评"
       }
     ],
+    "links": [
+      {
+        "platform": "GitHub",
+        "title": "开源仓库",
+        "url": "https://github.com/zhou415770319/child_points_uni"
+      },
+      {
+        "platform": "微信公众号",
+        "title": "说明文档",
+        "url": "https://mp.weixin.qq.com/s/fwhBXbWZYBNVzYYAXmfx1A"
+      }
+    ],
     "shortDesc": "面向儿童的积分任务系统移动端，家长端 + 儿童端双角色，基于飞书多维表格存储（零服务器、免费方案），Coze 工作流 AI 自动建任务。",
     "description": "面向儿童的积分任务系统移动端，提供家长端 + 儿童端双角色：家长布置任务、审核打卡并管理奖励，儿童领取任务、完成打卡、用积分兑换奖励。系统内置积分 / 金币双货币体系，兼顾日常激励与长期成长记录。数据存储基于飞书多维表格配置实现，无需自建服务器，整套方案完全免费落地。",
     "status": "MVP",
     "nextPlan": "持续迭代：计划增加更多激励玩法与多孩家庭支持。",
-    "projectUrl": "",
-    "sourceUrl": "https://github.com/zhou415770319/child_points_uni",
     "devTool": "workbuddy",
-    "docUrl": "https://mp.weixin.qq.com/s/fwhBXbWZYBNVzYYAXmfx1A",
-    "zhihuPromoteUrl": "",
-    "xiaohongshuAcc": "",
     "createdAt": "2026-03-05T00:00:00.000Z",
     "updatedAt": "2026-10-28T00:00:00.000Z"
   },
@@ -139,16 +153,18 @@
         "name": "完整流程 · 师生两端数据流"
       }
     ],
+    "links": [
+      {
+        "platform": "GitHub",
+        "title": "开源仓库",
+        "url": "https://github.com/zhou415770319/knowledge_colosseum"
+      }
+    ],
     "shortDesc": "面向儿童的游戏化知识测试平台，AI 自动生成闯关题库 + 多游戏模板 + 模板市场，飞书多维表格存储，个人独立开发。",
     "description": "面向儿童的游戏化知识测试平台，AI 根据主题自动生成选择题闯关题库，并内置记忆翻牌、数独等多种游戏模板，支持模板市场扩展。模板可由 AI 动态生成：AI 返回 JSON，内含模板渲染页面源码（HTML）与数据结构规范（config_json），HTML 落盘后游戏即可直接预览/游玩，config_json 用于约束后续 AI 生成游戏数据的字段规范。生成游戏时，结合所选知识点与模板 config_json 规范，AI 产出对应数据并注入模板组装成可玩游戏；游戏可对外分享，他人游玩后产生的数据统一回存飞书多维表格。AI 能力以 BYOK（自带密钥）方式接入。",
     "status": "MVP",
     "nextPlan": "持续迭代：扩展更多玩法模板，完善模板市场生态。",
-    "projectUrl": "",
-    "sourceUrl": "https://github.com/zhou415770319/knowledge_colosseum",
     "devTool": "workbuddy",
-    "docUrl": "",
-    "zhihuPromoteUrl": "",
-    "xiaohongshuAcc": "",
     "createdAt": "2026-06-01T00:00:00.000Z",
     "updatedAt": "2026-10-28T00:00:00.000Z"
   }

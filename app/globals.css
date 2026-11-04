@@ -519,6 +519,8 @@ a.card:hover {
 .modal-body {
   padding: 20px 22px;
   overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 .modal-footer {
   padding: 16px 22px;
@@ -595,6 +597,70 @@ a.card:hover {
   text-align: center;
   color: #e6eaf1;
   font-size: 14px;
+}
+
+/* ===== 截图管理（弹框内） ===== */
+.shot-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.shot-manage {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.shot-manage-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.shot-manage-item img {
+  width: 56px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  background: #0f1115;
+}
+.shot-manage-item .field {
+  margin: 0;
+  flex: 1;
+}
+.shot-manage-item .btn-danger {
+  flex-shrink: 0;
+}
+
+/* ===== 平台链路编辑（弹框内） ===== */
+.link-manage {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.link-manage-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.link-manage-row .field {
+  margin: 0;
+}
+.link-manage-row .link-select {
+  width: 110px;
+  flex-shrink: 0;
+}
+.link-manage-row .link-title {
+  flex: 1 1 40%;
+}
+.link-manage-row .link-url {
+  flex: 1 1 60%;
+}
+.link-manage-row .btn-danger {
+  flex-shrink: 0;
 }
 
 /* ===== 状态/通用 ===== */

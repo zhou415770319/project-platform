@@ -9,11 +9,6 @@ import {
   type Project,
 } from "@/types/project";
 
-interface LinkItem {
-  label: string;
-  value?: string;
-}
-
 export default function ProjectDetailPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [state, setState] = useState<"loading" | "ready" | "private" | "notfound">(
@@ -89,14 +84,6 @@ export default function ProjectDetailPage() {
     );
   }
 
-  const links: LinkItem[] = [
-    { label: "项目访问", value: project.projectUrl },
-    { label: "源码 GitHub", value: project.sourceUrl },
-    { label: "技术文档", value: project.docUrl },
-    { label: "推广（知乎）", value: project.zhihuPromoteUrl },
-    { label: "获客（小红书）", value: project.xiaohongshuAcc },
-  ];
-
   return (
     <div className="container">
       <Link href="/" className="back">
@@ -151,20 +138,20 @@ export default function ProjectDetailPage() {
 
         <div className="link-block">
           <h3>配套平台链路</h3>
-          <div className="links">
-            {links.map((l) => (
-              <div className="link-item" key={l.label}>
-                <span className="label">{l.label}</span>
-                {l.value ? (
-                  <a href={l.value} target="_blank" rel="noopener noreferrer">
-                    {l.value}
+          {project.links && project.links.length > 0 ? (
+            <div className="links">
+              {project.links.map((l, i) => (
+                <div className="link-item" key={i}>
+                  <span className="label">{l.platform}</span>
+                  <a href={l.url} target="_blank" rel="noopener noreferrer">
+                    {l.title || l.url}
                   </a>
-                ) : (
-                  <span className="empty">未配置</span>
-                )}
-              </div>
-            ))}
-          </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="hint">该平台链路将在后台配置后展示。</p>
+          )}
         </div>
 
         {project.nextPlan && (

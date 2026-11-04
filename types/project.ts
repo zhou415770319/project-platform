@@ -1,9 +1,19 @@
 /** 项目截图 */
 export interface ProjectScreenshot {
-  /** 图片 URL（存 public/ 下的路径或图床链接） */
+  /** 图片 URL（存 public/ 下的路径 / 图床链接 / 上传后的 base64） */
   src: string;
   /** 截图说明（可选） */
   name?: string;
+}
+
+/** 平台链路（源码 / 文档 / 推广 / 获客等，可动态添加多条） */
+export interface PlatformLink {
+  /** 平台，如 GitHub / 微信公众号 / 知乎 / 小红书 / 网站 */
+  platform: string;
+  /** 链接标题，如：源码仓库 */
+  title: string;
+  /** 链接地址 */
+  url: string;
 }
 
 /** 项目进度状态枚举：立项 / 功能开发 / MVP版 / 完整版 */
@@ -17,6 +27,8 @@ export interface Project {
   cover?: string;
   /** 项目截图列表 */
   screenshots?: ProjectScreenshot[];
+  /** 平台链路列表（源码 / 文档 / 推广 / 获客等） */
+  links?: PlatformLink[];
   /** 简短简介（首页卡片） */
   shortDesc: string;
   /** 详细描述（详情页） */
@@ -25,18 +37,8 @@ export interface Project {
   status: ProjectStatus;
   /** 后续计划 */
   nextPlan?: string;
-  /** 项目访问链接 */
-  projectUrl?: string;
-  /** 源码 GitHub 链接 */
-  sourceUrl?: string;
   /** 开发工具（如 workbuddy） */
   devTool?: string;
-  /** 技术文档链接（如公众号开放平台） */
-  docUrl?: string;
-  /** 推广链接（如知乎） */
-  zhihuPromoteUrl?: string;
-  /** 获客账号（如小红书） */
-  xiaohongshuAcc?: string;
   createdAt: string;
   updatedAt: string;
 }
