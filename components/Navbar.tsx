@@ -29,6 +29,9 @@ export default function Navbar() {
         </Link>
         <nav className="nav-links">
           <Link href="/">首页</Link>
+          <a href="https://resume.feiyumdm.cn/" target="_blank" rel="noopener noreferrer">
+            个人简历
+          </a>
           {authed && <Link href="/admin">后台管理</Link>}
           {authed ? (
             <button type="button" className="btn-link" onClick={logout}>
