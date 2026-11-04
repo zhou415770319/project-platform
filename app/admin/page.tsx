@@ -336,6 +336,11 @@ export default function AdminPage() {
                   <div className="full">
                     <label>封面图 URL</label>
                     <input className="field" value={form.cover} onChange={(e) => set("cover", e.target.value)} placeholder="图床 / COS 链接，或 /screenshots/xxx.png，可留空" />
+                    {form.cover && (
+                      <a href={form.cover} target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", marginTop: 8 }}>
+                        <img src={form.cover} alt="封面预览" style={{ height: 64, borderRadius: 6, border: "1px solid var(--border)" }} title="点击预览封面" />
+                      </a>
+                    )}
                   </div>
 
                   {/* 项目截图：上传 + 删除 */}

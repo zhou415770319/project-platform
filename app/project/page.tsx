@@ -103,9 +103,12 @@ export default function ProjectDetailPage() {
         </div>
 
         {project.cover && (
-          <div
+          <button
+            type="button"
             className="detail-cover"
-            style={{ backgroundImage: `url(${project.cover})` }}
+            style={{ backgroundImage: `url(${project.cover})`, cursor: "zoom-in" }}
+            onClick={() => setViewSrc(project.cover!)}
+            aria-label="预览封面图"
           />
         )}
 
