@@ -1,36 +1,155 @@
 [
   {
     "id": "life-os",
-    "name": "Life OS 全栈插件平台",
-    "cover": "",
-    "shortDesc": "一个把日程、习惯、知识库打通的个人效率全栈平台，支持浏览器插件与定时任务。",
-    "description": "Life OS 是一个面向个人效率的全栈插件平台，整合日程管理、习惯打卡、知识库与自动化任务，前端基于 React / Next.js，后端基于 NestJS，支持浏览器插件和云端定时任务。通过 Coze 工作流与影刀 RPA 集成，把重复性操作自动化，帮助用户把零散工具收敛到一个入口。",
+    "name": "Life-OS · 人生管理系统",
+    "cover": "/screenshots/life-os-1.png",
+    "screenshots": [
+      {
+        "src": "/screenshots/life-os-1.png",
+        "name": "成长看板 · 目标 / 习惯 / 认知"
+      },
+      {
+        "src": "/screenshots/life-os-2.png",
+        "name": "插件中心 · 已装插件管理"
+      },
+      {
+        "src": "/screenshots/life-os-3.png",
+        "name": "AI 模型 · 多平台与用途分配"
+      },
+      {
+        "src": "/screenshots/life-os-4.png",
+        "name": "插件市场 · 在线 / 内置"
+      },
+      {
+        "src": "/screenshots/life-os-5.png",
+        "name": "AI 助手 · 深度模式对话"
+      },
+      {
+        "src": "/screenshots/life-os-6.png",
+        "name": "插件方法 · 参数签名定义"
+      },
+      {
+        "src": "/screenshots/life-os-7.png",
+        "name": "插件调用 · 场景提示引导"
+      }
+    ],
+    "shortDesc": "以插件为核心的个人管理平台，插件化扩展 + 全局 AI 助手（本地 BYOK），对接飞书多维表格 + 影刀 RPA + 本地 Excel。已发布 v1.0.0。",
+    "description": "一个以插件为核心的个人管理平台，参考 harness 的插件机制（DSH 动态服务宿主），每个插件都是一套独立的子系统，主壳只提供看板与运行时；覆盖目标管理、微习惯养成、GTD 任务、番茄专注、时间黑洞分析与复盘面板。AI 模型支持本地 BYOK（自带密钥）配置，可接入多个 OpenAI 兼容模型平台，密钥仅保存在本地。插件可携带云函数（server.js）作为后端能力，装载时由宿主动态注册进后端服务，卸载即注销；插件对外暴露的方法可直接被全局 AI 助手通过对话调用。插件可复用平台提供的集成能力：自研项目管理插件对接飞书多维表格读取项目信息，指令状态变化时联动本机影刀 RPA 流程执行并回填结果；插件也可直接读取、修改本地 Excel 文件；插件页面可导出自包含 HTML，经 ShareOne 生成分享链接作为网页对外发布。简单插件可由 AI 助手对话生成，复杂插件参照内置插件开发指南、借助 AI 工具修改源代码实现；完成的插件可提交到插件市场，仅发布插件包、不含本地数据。系统所有数据保存在本地，支持按模块 / 插件勾选导出备份与导入还原。",
     "status": "FULL_RELEASE",
-    "nextPlan": "迭代方向：新增多端数据同步、AI 复盘周报、开放插件市场。",
-    "projectUrl": "https://example.com/life-os",
-    "sourceUrl": "https://github.com/yourname/life-os",
+    "nextPlan": "持续迭代：丰富插件市场生态，优化 AI 助手深度模式与跨会话记忆。",
+    "projectUrl": "",
+    "sourceUrl": "https://github.com/zhou415770319/life-os-platform",
     "devTool": "workbuddy",
-    "docUrl": "https://mp.weixin.qq.com/你的公众号文章链接",
-    "zhihuPromoteUrl": "https://www.zhihu.com/你的知乎文章链接",
-    "xiaohongshuAcc": "https://www.xiaohongshu.com/你的小红书主页链接",
+    "docUrl": "https://github.com/zhou415770319/life-os-plugins",
+    "zhihuPromoteUrl": "",
+    "xiaohongshuAcc": "",
     "createdAt": "2026-01-10T00:00:00.000Z",
-    "updatedAt": "2026-10-20T00:00:00.000Z"
+    "updatedAt": "2026-10-28T00:00:00.000Z"
   },
   {
-    "id": "kid-paradise",
-    "name": "童趣乐园积分系统",
-    "cover": "",
-    "shortDesc": "面向孩子的积分奖励小游戏平台，用积分激励好习惯，家长后台可控。",
-    "description": "童趣乐园积分系统是一款面向 7-8 岁孩子的习惯激励小游戏，孩子完成打卡获得积分、兑换奖励。基于 Unity 小游戏 + Web 后台，家长端可配置奖励规则、查看成长报告，支持多设备定时播放提醒。",
+    "id": "child-points",
+    "name": "童趣乐园 · 儿童积分任务系统",
+    "cover": "/screenshots/childpoints-3.png",
+    "screenshots": [
+      {
+        "src": "/screenshots/childpoints-1.png",
+        "name": "登录 · 双角色切换与二级密码"
+      },
+      {
+        "src": "/screenshots/childpoints-2.png",
+        "name": "注册 · 验证码与二级密码"
+      },
+      {
+        "src": "/screenshots/childpoints-3.png",
+        "name": "家长端首页 · 任务与兑换审核"
+      },
+      {
+        "src": "/screenshots/childpoints-4.png",
+        "name": "任务管理 · 筛选与新建"
+      },
+      {
+        "src": "/screenshots/childpoints-5.png",
+        "name": "AI 任务助手 · 对话生成任务"
+      },
+      {
+        "src": "/screenshots/childpoints-6.png",
+        "name": "商城管理 · 商品与库存"
+      },
+      {
+        "src": "/screenshots/childpoints-7.png",
+        "name": "儿童端首页 · 打卡与学习进度"
+      },
+      {
+        "src": "/screenshots/childpoints-8-detail.png",
+        "name": "任务详情 · AI 评分点评"
+      }
+    ],
+    "shortDesc": "面向儿童的积分任务系统移动端，家长端 + 儿童端双角色，基于飞书多维表格存储（零服务器、免费方案），Coze 工作流 AI 自动建任务。",
+    "description": "面向儿童的积分任务系统移动端，提供家长端 + 儿童端双角色：家长布置任务、审核打卡并管理奖励，儿童领取任务、完成打卡、用积分兑换奖励。系统内置积分 / 金币双货币体系，兼顾日常激励与长期成长记录。数据存储基于飞书多维表格配置实现，无需自建服务器，整套方案完全免费落地。",
     "status": "MVP",
-    "nextPlan": "规划中：加入 AI 成长分析、多孩家庭支持、移动端小程序。",
-    "projectUrl": "https://example.com/kid-paradise",
-    "sourceUrl": "https://github.com/yourname/kid-paradise",
+    "nextPlan": "持续迭代：计划增加更多激励玩法与多孩家庭支持。",
+    "projectUrl": "",
+    "sourceUrl": "https://github.com/zhou415770319/child_points_uni",
     "devTool": "workbuddy",
-    "docUrl": "https://mp.weixin.qq.com/你的公众号文章链接",
-    "zhihuPromoteUrl": "https://www.zhihu.com/你的知乎文章链接",
-    "xiaohongshuAcc": "https://www.xiaohongshu.com/你的小红书主页链接",
+    "docUrl": "https://mp.weixin.qq.com/s/fwhBXbWZYBNVzYYAXmfx1A",
+    "zhihuPromoteUrl": "",
+    "xiaohongshuAcc": "",
     "createdAt": "2026-03-05T00:00:00.000Z",
-    "updatedAt": "2026-09-12T00:00:00.000Z"
+    "updatedAt": "2026-10-28T00:00:00.000Z"
+  },
+  {
+    "id": "knowledge-arena",
+    "name": "知识竞技场 · 游戏化知识测试平台",
+    "cover": "/screenshots/kc-1.png",
+    "screenshots": [
+      {
+        "src": "/screenshots/kc-1.png",
+        "name": "首页看板 · 游戏与成绩统计"
+      },
+      {
+        "src": "/screenshots/kc-2.png",
+        "name": "模板市场 · 内置玩法模板"
+      },
+      {
+        "src": "/screenshots/kc-3.png",
+        "name": "生成游戏 · 知识点与难度配置"
+      },
+      {
+        "src": "/screenshots/kc-4.png",
+        "name": "知识点管理 · 题库列表维护"
+      },
+      {
+        "src": "/screenshots/kc-5.png",
+        "name": "AI 提示词 · 知识点批量导入"
+      },
+      {
+        "src": "/screenshots/kc-6.png",
+        "name": "AI 配置 · BYOK 多服务商接入"
+      },
+      {
+        "src": "/screenshots/kc-7.png",
+        "name": "模板规则 · 目录结构与渲染器"
+      },
+      {
+        "src": "/screenshots/kc-8.png",
+        "name": "数据生成 · AI Schema 请求参数"
+      },
+      {
+        "src": "/screenshots/kc-9.png",
+        "name": "完整流程 · 师生两端数据流"
+      }
+    ],
+    "shortDesc": "面向儿童的游戏化知识测试平台，AI 自动生成闯关题库 + 多游戏模板 + 模板市场，飞书多维表格存储，个人独立开发。",
+    "description": "面向儿童的游戏化知识测试平台，AI 根据主题自动生成选择题闯关题库，并内置记忆翻牌、数独等多种游戏模板，支持模板市场扩展。模板可由 AI 动态生成：AI 返回 JSON，内含模板渲染页面源码（HTML）与数据结构规范（config_json），HTML 落盘后游戏即可直接预览/游玩，config_json 用于约束后续 AI 生成游戏数据的字段规范。生成游戏时，结合所选知识点与模板 config_json 规范，AI 产出对应数据并注入模板组装成可玩游戏；游戏可对外分享，他人游玩后产生的数据统一回存飞书多维表格。AI 能力以 BYOK（自带密钥）方式接入。",
+    "status": "MVP",
+    "nextPlan": "持续迭代：扩展更多玩法模板，完善模板市场生态。",
+    "projectUrl": "",
+    "sourceUrl": "https://github.com/zhou415770319/knowledge_colosseum",
+    "devTool": "workbuddy",
+    "docUrl": "",
+    "zhihuPromoteUrl": "",
+    "xiaohongshuAcc": "",
+    "createdAt": "2026-06-01T00:00:00.000Z",
+    "updatedAt": "2026-10-28T00:00:00.000Z"
   }
 ]

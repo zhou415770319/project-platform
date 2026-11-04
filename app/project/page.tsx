@@ -19,6 +19,7 @@ export default function ProjectDetailPage() {
   const [state, setState] = useState<"loading" | "ready" | "private" | "notfound">(
     "loading"
   );
+  const [viewSrc, setViewSrc] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -129,6 +130,25 @@ export default function ProjectDetailPage() {
           </p>
         )}
 
+        {project.screenshots && project.screenshots.length > 0 && (
+          <div className="link-block">
+            <h3>项目截图</h3>
+            <div className="shot-grid">
+              {project.screenshots.map((s, i) => (
+                <button
+                  className="shot"
+                  key={i}
+                  type="button"
+                  onClick={() => setViewSrc(s.src)}
+                >
+                  <img src={s.src} alt={s.name ?? project.name} loading="lazy" />
+                  {s.name && <span className="shot-name">{s.name}</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="link-block">
           <h3>配套平台链路</h3>
           <div className="links">
@@ -154,6 +174,14 @@ export default function ProjectDetailPage() {
           </div>
         )}
       </article>
+
+      {/* 截图灯箱 */}
+      {viewSrc && (
+        <div className="lightbox" onClick={() => setViewSrc(null)}>
+          <img src={viewSrc} alt="截图预览" />
+          <span className="lb-caption">点击任意处关闭</span>
+        </div>
+      )}
     </div>
   );
 }

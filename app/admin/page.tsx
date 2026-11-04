@@ -7,6 +7,7 @@ import {
   STATUS_BADGE,
   STATUS_LABEL,
   type Project,
+  type ProjectScreenshot,
   type ProjectStatus,
 } from "@/types/project";
 
@@ -18,6 +19,7 @@ function emptyForm(): Project {
     id: "",
     name: "",
     cover: "",
+    screenshots: [],
     shortDesc: "",
     description: "",
     status: "INIT",
@@ -31,6 +33,19 @@ function emptyForm(): Project {
     createdAt: now,
     updatedAt: now,
   };
+}
+
+/** 截图文本（每行：图片URL，可选 | 说明）→ 结构化数组 */
+function parseScreenshots(text: string): ProjectScreenshot[] {
+  return text
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map((l) => {
+      const idx = l.indexOf("|");
+      if (idx === -1) return { src: l };
+      return { src: l.slice(0, idx).trim(), name: l.slice(idx + 1).trim() };
+    });
 }
 
 /** 解析导入的 JSON：接受 数组 或 { projects: [...] } */
@@ -76,7 +91,7 @@ export default function AdminPage() {
     })();
   }, [router]);
 
-  const set = (field: keyof Project, value: string) =>
+  const set = <K extends keyof Project>(field: K, value: Project[K]) =>
     setForm((f) => ({ ...f, [field]: value }));
 
   // —— 弹框操作 ——
@@ -262,7 +277,17 @@ export default function AdminPage() {
                   </div>
                   <div className="full">
                     <label>封面图 URL</label>
-                    <input className="field" value={form.cover} onChange={(e) => set("cover", e.target.value)} placeholder="图床 / COS 链接，可留空" />
+                    <input className="field" value={form.cover} onChange={(e) => set("cover", e.target.value)} placeholder="图床 / COS 链接，或 /screenshots/xxx.png，可留空" />
+                  </div>
+                  <div className="full">
+                    <label>项目截图（每行一条：图片URL，可选用「|」加说明）</label>
+                    <textarea
+                      className="field"
+                      rows={5}
+                      value={form.screenshots?.map((s) => (s.name ? `${s.src} | ${s.name}` : s.src)).join("\n") ?? ""}
+                      onChange={(e) => set("screenshots", parseScreenshots(e.target.value))}
+                      placeholder={"/screenshots/childpoints-1.png | 登录页"}
+                    />
                   </div>
                   <div className="full">
                     <label>简短简介 *（首页卡片）</label>

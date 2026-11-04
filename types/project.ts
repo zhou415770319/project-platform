@@ -1,3 +1,11 @@
+/** 项目截图 */
+export interface ProjectScreenshot {
+  /** 图片 URL（存 public/ 下的路径或图床链接） */
+  src: string;
+  /** 截图说明（可选） */
+  name?: string;
+}
+
 /** 项目进度状态枚举：立项 / 功能开发 / MVP版 / 完整版 */
 export type ProjectStatus = "INIT" | "DEV" | "MVP" | "FULL_RELEASE";
 
@@ -7,6 +15,8 @@ export interface Project {
   name: string;
   /** 封面图 URL（可选，放图床/COS） */
   cover?: string;
+  /** 项目截图列表 */
+  screenshots?: ProjectScreenshot[];
   /** 简短简介（首页卡片） */
   shortDesc: string;
   /** 详细描述（详情页） */
