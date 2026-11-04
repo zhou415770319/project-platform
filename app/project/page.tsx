@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { tryDecryptProjects } from "@/lib/crypto";
-import { getSessionKey } from "@/lib/session";
+import { getSession } from "@/lib/session";
 import {
   STATUS_BADGE,
   STATUS_LABEL,
@@ -29,19 +28,20 @@ export default function ProjectDetailPage() {
         setState("notfound");
         return;
       }
-      const key = getSessionKey();
+      const key = getSession();
       const isAuthed = !!key;
 
       const pubRes = await fetch("/projects.public.json", { cache: "no-store" });
       const pub = (await pubRes.json()) as Project[];
       let found = pub.find((p) => p.id === id);
 
-      // 公开数据里没有，说明是私密项目，尝试解密（仅登录用户）
+      // 公开数据里没有，说明是私密项目，仅登录用户加载
       if (!found && isAuthed) {
-        const privRes = await fetch("/projects.private.bin", { cache: "no-store" });
-        const cipher = await privRes.text();
-        const priv = tryDecryptProjects(cipher, key!) ?? [];
-        found = priv.find((p) => p.id === id);
+        const privRes = await fetch("/projects.private.json", { cache: "no-store" });
+        if (privRes.ok) {
+          const priv = (await privRes.json()) as Project[];
+          found = priv.find((p) => p.id === id);
+        }
       }
 
       if (cancelled) return;

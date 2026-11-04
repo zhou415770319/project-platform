@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getSessionKey, clearSession } from "@/lib/session";
+import { getSession, clearSession } from "@/lib/session";
 
 export default function Navbar() {
   const [authed, setAuthed] = useState(false);
@@ -11,7 +11,7 @@ export default function Navbar() {
   const router = useRouter();
 
   useEffect(() => {
-    setAuthed(!!getSessionKey());
+    setAuthed(getSession());
   }, [pathname]);
 
   const logout = () => {

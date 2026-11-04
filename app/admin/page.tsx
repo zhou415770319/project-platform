@@ -1,9 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { tryDecryptProjects } from "@/lib/crypto";
-import { clearSession, getSessionKey } from "@/lib/session";
+import { useEffect, useRef, useState } from "react";
+import { clearSession, getSession } from "@/lib/session";
 import {
   STATUS_BADGE,
   STATUS_LABEL,
@@ -34,11 +33,22 @@ function emptyForm(): Project {
   };
 }
 
+/** 解析导入的 JSON：接受 数组 或 { projects: [...] } */
+function normalizeIncoming(raw: unknown): Project[] {
+  if (Array.isArray(raw)) return raw as Project[];
+  if (raw && typeof raw === "object" && Array.isArray((raw as any).projects)) {
+    return (raw as any).projects as Project[];
+  }
+  return [];
+}
+
 export default function AdminPage() {
   const router = useRouter();
+  const fileRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(true);
   const [authed, setAuthed] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [importMsg, setImportMsg] = useState("");
 
   // 弹框
   const [modalOpen, setModalOpen] = useState(false);
@@ -48,8 +58,7 @@ export default function AdminPage() {
   // 鉴权 + 加载全部数据
   useEffect(() => {
     (async () => {
-      const key = getSessionKey();
-      if (!key) {
+      if (!getSession()) {
         router.replace("/login");
         return;
       }
@@ -57,9 +66,8 @@ export default function AdminPage() {
 
       const pubRes = await fetch("/projects.public.json", { cache: "no-store" });
       const pub = (await pubRes.json()) as Project[];
-      const privRes = await fetch("/projects.private.bin", { cache: "no-store" });
-      const cipher = await privRes.text();
-      const priv = tryDecryptProjects(cipher, key) ?? [];
+      const privRes = await fetch("/projects.private.json", { cache: "no-store" });
+      const priv = (await privRes.json()) as Project[];
 
       setProjects(
         [...pub, ...priv].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
@@ -77,16 +85,12 @@ export default function AdminPage() {
     setForm(emptyForm());
     setModalOpen(true);
   };
-
   const openEdit = (p: Project) => {
     setEditing(true);
     setForm({ ...p });
     setModalOpen(true);
   };
-
-  const closeModal = () => {
-    setModalOpen(false);
-  };
+  const closeModal = () => setModalOpen(false);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,7 +117,44 @@ export default function AdminPage() {
     }
   };
 
-  // 导出明文 JSON（数据源），供覆盖 data/projects.raw.json
+  // —— 导入数据（支持从别的项目导出的 JSON 合并进来）——
+  const onImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const incoming = normalizeIncoming(JSON.parse(reader.result as string));
+        if (incoming.length === 0) throw new Error("empty");
+        setProjects((list) => {
+          const map = new Map(list.map((p) => [p.id, p]));
+          let added = 0;
+          let updated = 0;
+          for (const p of incoming) {
+            if (!p || typeof p.id !== "string" || !p.name) continue;
+            if (map.has(p.id)) {
+              map.set(p.id, { ...map.get(p.id)!, ...p });
+              updated++;
+            } else {
+              map.set(p.id, p);
+              added++;
+            }
+          }
+          const next = [...map.values()].sort((a, b) =>
+            b.updatedAt.localeCompare(a.updatedAt)
+          );
+          setImportMsg(`导入完成：新增 ${added} 个，更新 ${updated} 个。记得导出并 build-data 上线。`);
+          return next;
+        });
+      } catch {
+        alert("导入失败：请选择有效的项目 JSON（数组，或 { projects: [...] }）。");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
+
+  // —— 导出明文 JSON（数据源 / 同步）——
   const exportRaw = () => {
     const blob = new Blob([JSON.stringify(projects, null, 2)], {
       type: "application/json",
@@ -139,9 +180,12 @@ export default function AdminPage() {
     <div className="container">
       <div className="admin-toolbar">
         <h1>项目管理后台</h1>
-        <div style={{ display: "flex", gap: 10 }}>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
           <button className="btn-primary" onClick={openAdd}>
             ＋ 新增项目
+          </button>
+          <button className="btn-secondary" onClick={() => fileRef.current?.click()}>
+            导入数据
           </button>
           <button className="btn-secondary" onClick={exportRaw}>
             导出数据 JSON
@@ -151,6 +195,16 @@ export default function AdminPage() {
           </button>
         </div>
       </div>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="application/json,.json"
+        style={{ display: "none" }}
+        onChange={onImportFile}
+      />
+      {importMsg && (
+        <p style={{ color: "var(--green)", fontSize: 13, margin: "0 0 10px" }}>{importMsg}</p>
+      )}
 
       {/* 项目列表 */}
       <div className="section-title">
@@ -158,7 +212,7 @@ export default function AdminPage() {
         <span className="note">{projects.length} 个</span>
       </div>
       {projects.length === 0 ? (
-        <div className="empty">暂无项目，点击右上角「新增项目」添加。</div>
+        <div className="empty">暂无项目，点击右上角「新增项目」添加，或「导入数据」导入。</div>
       ) : (
         <div className="proj-list">
           {projects.map((p) => (
@@ -271,12 +325,12 @@ export default function AdminPage() {
 
       {/* 上线步骤说明 */}
       <div className="export-box">
-        <strong>上线步骤（新增/修改项目后）</strong>
+        <strong>上线步骤（新增/修改/导入项目后）</strong>
         <ol>
-          <li>点击 <b>导出数据 JSON</b>，把下载的 <code>projects.raw.json</code> 覆盖到项目根目录的 <code>data/projects.raw.json</code>。</li>
-          <li>在项目根目录执行 <code>npm run encrypt</code>，重新生成公开 JSON 与加密私密数据。</li>
-          <li>提交 <code>public/projects.public.json</code> 与 <code>public/projects.private.bin</code> 到 Git 并推送。</li>
-          <li>EdgeOne 自动重新部署，线上即为最新内容。</li>
+          <li>点击 <b>导出数据 JSON</b>，把下载的 <code>projects.raw.json</code> 覆盖到项目根目录的 <code>data/projects.raw.json</code>（作为本地数据源）。</li>
+          <li>在项目根目录执行 <code>npm run build-data</code>，重新生成公开 JSON 与私密 JSON。</li>
+          <li>提交 <code>public/projects.public.json</code> 与 <code>public/projects.private.json</code> 到 Git 并推送到 <b>main</b> 分支。</li>
+          <li>EdgeOne 检测到 main 分支更新后自动重新部署，线上即为最新内容。</li>
         </ol>
       </div>
     </div>

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { tryDecryptProjects } from "@/lib/crypto";
+import { ADMIN_HASH } from "@/lib/account";
+import { hashPassword } from "@/lib/crypto";
 import { saveSession } from "@/lib/session";
 
 export default function LoginPage() {
@@ -11,31 +12,17 @@ export default function LoginPage() {
   const [busy, setBusy] = useState(false);
   const router = useRouter();
 
-  const submit = async (e: React.FormEvent) => {
+  const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
     setError("");
-    try {
-      // 校验方式：用输入的密码解密私密数据文件。
-      // 能成功解出合法项目数组 => 密码正确；否则拒绝登录。
-      const res = await fetch("/projects.private.bin", { cache: "no-store" });
-      if (!res.ok) {
-        setError("系统初始化异常：缺少私密数据文件，请先运行 npm run encrypt。");
-        setBusy(false);
-        return;
-      }
-      const cipher = await res.text();
-      const data = tryDecryptProjects(cipher, password);
-      if (data) {
-        saveSession(password);
-        router.push("/admin");
-        router.refresh();
-      } else {
-        setError("密码错误，请重试。");
-        setBusy(false);
-      }
-    } catch {
-      setError("登录失败，请稍后重试。");
+    // 账号加密校验：比对 sha256(输入) 与预存哈希，不传输/不存储明文密码
+    if (hashPassword(password) === ADMIN_HASH) {
+      saveSession();
+      router.push("/admin");
+      router.refresh();
+    } else {
+      setError("密码错误，请重试。");
       setBusy(false);
     }
   };
@@ -60,8 +47,7 @@ export default function LoginPage() {
         </form>
         {error && <p className="error">{error}</p>}
         <p className="hint">
-          密码在部署时的 .env.local（ADMIN_PASSWORD）中配置，请在
-          README.md 中查看如何修改。
+          账号密码哈希配置在 lib/account.ts 的 ADMIN_HASH（修改密码见 README）。
         </p>
       </div>
     </div>

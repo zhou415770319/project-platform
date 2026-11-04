@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import ProjectCard from "@/components/ProjectCard";
-import { tryDecryptProjects } from "@/lib/crypto";
-import { getSessionKey } from "@/lib/session";
+import { getSession } from "@/lib/session";
 import { STATUS_ORDER, type Project } from "@/types/project";
 
 export default function HomePage() {
@@ -15,8 +14,7 @@ export default function HomePage() {
     let cancelled = false;
     (async () => {
       try {
-        const key = getSessionKey();
-        const isAuthed = !!key;
+        const isAuthed = getSession();
         if (!cancelled) setAuthed(isAuthed);
 
         // 1) 公开数据（MVP / 完整版）——所有人都能读
@@ -24,13 +22,14 @@ export default function HomePage() {
         if (!pubRes.ok) throw new Error("public data");
         const pub = (await pubRes.json()) as Project[];
 
-        // 2) 已登录：再解密私密数据（立项 / 功能开发）
+        // 2) 已登录：再加载私密数据（立项 / 功能开发）
         let all = [...pub];
         if (isAuthed) {
-          const privRes = await fetch("/projects.private.bin", { cache: "no-store" });
-          const privCipher = await privRes.text();
-          const priv = tryDecryptProjects(privCipher, key!) ?? [];
-          all = [...pub, ...priv];
+          const privRes = await fetch("/projects.private.json", { cache: "no-store" });
+          if (privRes.ok) {
+            const priv = (await privRes.json()) as Project[];
+            all = [...pub, ...priv];
+          }
         }
 
         all.sort(
