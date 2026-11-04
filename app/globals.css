@@ -493,6 +493,12 @@ a.card:hover {
   box-shadow: var(--shadow);
   animation: pop-in 0.18s ease;
 }
+.modal form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
 .modal-header {
   display: flex;
   align-items: center;
@@ -528,6 +534,7 @@ a.card:hover {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
+  flex-shrink: 0;
 }
 @keyframes fade-in {
   from { opacity: 0; }
