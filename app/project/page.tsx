@@ -96,6 +96,11 @@ export default function ProjectDetailPage() {
             <span className={STATUS_BADGE[project.status]}>
               {STATUS_LABEL[project.status]}
             </span>
+            {typeof project.completion === "number" && (
+              <span className="badge badge-completion">
+                完成度 {project.completion}%
+              </span>
+            )}
           </div>
           <p style={{ color: "var(--text-dim)", margin: 0, fontSize: 14 }}>
             更新于 {new Date(project.updatedAt).toLocaleDateString("zh-CN")}

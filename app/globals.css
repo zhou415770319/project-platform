@@ -236,6 +236,10 @@ a.card:hover {
   background: rgba(79, 140, 255, 0.16);
   color: var(--accent);
 }
+.badge-completion {
+  background: rgba(139, 92, 246, 0.16);
+  color: #a78bfa;
+}
 
 /* ===== 登录页 ===== */
 .auth-wrap {
@@ -486,7 +490,7 @@ a.card:hover {
   border: 1px solid var(--border);
   border-radius: 14px;
   width: 100%;
-  max-width: 720px;
+  max-width: 940px;
   max-height: 88vh;
   display: flex;
   flex-direction: column;

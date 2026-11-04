@@ -18,6 +18,9 @@ export default function ProjectCard({ project }: { project: Project }) {
           <span className={STATUS_BADGE[project.status]}>
             {STATUS_LABEL[project.status]}
           </span>
+          {typeof project.completion === "number" && (
+            <span className="badge badge-completion">{project.completion}%</span>
+          )}
         </div>
         <p className="card-desc">{project.shortDesc}</p>
         <div className="card-foot">

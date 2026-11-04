@@ -51,7 +51,8 @@
     "nextPlan": "持续迭代：丰富插件市场生态，优化 AI 助手深度模式与跨会话记忆。",
     "devTool": "workbuddy",
     "createdAt": "2026-01-10T00:00:00.000Z",
-    "updatedAt": "2026-10-28T00:00:00.000Z"
+    "updatedAt": "2026-10-28T00:00:00.000Z",
+    "completion": 100
   },
   {
     "id": "child-points",
@@ -109,7 +110,8 @@
     "nextPlan": "持续迭代：计划增加更多激励玩法与多孩家庭支持。",
     "devTool": "workbuddy",
     "createdAt": "2026-03-05T00:00:00.000Z",
-    "updatedAt": "2026-10-28T00:00:00.000Z"
+    "updatedAt": "2026-10-28T00:00:00.000Z",
+    "completion": 90
   },
   {
     "id": "knowledge-arena",
@@ -166,6 +168,7 @@
     "nextPlan": "持续迭代：扩展更多玩法模板，完善模板市场生态。",
     "devTool": "workbuddy",
     "createdAt": "2026-06-01T00:00:00.000Z",
-    "updatedAt": "2026-10-28T00:00:00.000Z"
+    "updatedAt": "2026-10-28T00:00:00.000Z",
+    "completion": 90
   }
 ]

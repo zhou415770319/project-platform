@@ -25,6 +25,7 @@ function emptyForm(): Project {
     shortDesc: "",
     description: "",
     status: "INIT",
+    completion: 100,
     nextPlan: "",
     devTool: "workbuddy",
     createdAt: now,
@@ -70,6 +71,8 @@ export default function AdminPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState<Project>(emptyForm());
+  // 弹框内图片灯箱预览
+  const [previewSrc, setPreviewSrc] = useState<string | null>(null);
 
   // 鉴权 + 加载全部数据
   useEffect(() => {
@@ -337,9 +340,13 @@ export default function AdminPage() {
                     <label>封面图 URL</label>
                     <input className="field" value={form.cover} onChange={(e) => set("cover", e.target.value)} placeholder="图床 / COS 链接，或 /screenshots/xxx.png，可留空" />
                     {form.cover && (
-                      <a href={form.cover} target="_blank" rel="noopener noreferrer" style={{ display: "inline-block", marginTop: 8 }}>
-                        <img src={form.cover} alt="封面预览" style={{ height: 64, borderRadius: 6, border: "1px solid var(--border)" }} title="点击预览封面" />
-                      </a>
+                      <img
+                        src={form.cover}
+                        alt="封面预览"
+                        onClick={() => setPreviewSrc(form.cover!)}
+                        style={{ display: "block", marginTop: 8, height: 84, borderRadius: 6, border: "1px solid var(--border)", cursor: "zoom-in" }}
+                        title="点击在本页预览"
+                      />
                     )}
                   </div>
 
@@ -374,7 +381,7 @@ export default function AdminPage() {
                       <div className="shot-manage">
                         {form.screenshots.map((s, i) => (
                           <div className="shot-manage-item" key={i}>
-                            <img src={s.src} alt="" />
+                            <img src={s.src} alt="" onClick={() => setPreviewSrc(s.src)} style={{ cursor: "zoom-in" }} title="点击在本页预览" />
                             <input
                               className="field"
                               value={s.name ?? ""}
@@ -407,6 +414,17 @@ export default function AdminPage() {
                         <option key={s} value={s}>{STATUS_LABEL[s]}</option>
                       ))}
                     </select>
+                  </div>
+                  <div>
+                    <label>完成度（%）</label>
+                    <input
+                      className="field"
+                      type="number"
+                      min={0}
+                      max={100}
+                      value={form.completion ?? ""}
+                      onChange={(e) => set("completion", e.target.value === "" ? undefined : Math.min(100, Math.max(0, Number(e.target.value))))}
+                    />
                   </div>
                   <div>
                     <label>开发工具（默认 workbuddy）</label>
@@ -468,6 +486,14 @@ export default function AdminPage() {
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {/* 弹框内图片预览灯箱 */}
+      {previewSrc && (
+        <div className="lightbox" onClick={() => setPreviewSrc(null)}>
+          <img src={previewSrc} alt="图片预览" />
+          <span className="lb-caption">点击任意处关闭</span>
         </div>
       )}
 

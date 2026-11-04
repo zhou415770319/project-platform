@@ -35,6 +35,8 @@ export interface Project {
   description: string;
   /** 项目进度 */
   status: ProjectStatus;
+  /** 完成度（百分比，0-100，可选） */
+  completion?: number;
   /** 后续计划 */
   nextPlan?: string;
   /** 开发工具（如 workbuddy） */
