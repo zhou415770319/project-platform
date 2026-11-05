@@ -690,6 +690,21 @@ a.card:hover {
 }
 
 /* ===== 状态/通用 ===== */
+.field-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-dim);
+  cursor: pointer;
+  margin-top: 8px;
+}
+.field-check input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
 .loading,
 .empty,
 .guard {

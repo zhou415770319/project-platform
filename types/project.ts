@@ -37,6 +37,10 @@ export interface Project {
   status: ProjectStatus;
   /** 完成度（百分比，0-100，可选） */
   completion?: number;
+  /** 后续计划是否在详情页展示（默认 true 展示） */
+  showNextPlan?: boolean;
+  /** 平台链接是否在详情页展示（默认 true 展示） */
+  showLinks?: boolean;
   /** 后续计划 */
   nextPlan?: string;
   /** 开发工具（如 workbuddy） */

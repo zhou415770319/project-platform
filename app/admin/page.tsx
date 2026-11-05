@@ -26,6 +26,8 @@ function emptyForm(): Project {
     description: "",
     status: "INIT",
     completion: 100,
+    showNextPlan: true,
+    showLinks: true,
     nextPlan: "",
     devTool: "workbuddy",
     createdAt: now,
@@ -442,6 +444,10 @@ export default function AdminPage() {
                   <div className="full">
                     <label>后续计划</label>
                     <textarea className="field" rows={2} value={form.nextPlan} onChange={(e) => set("nextPlan", e.target.value)} />
+                    <label className="field-check">
+                      <input type="checkbox" checked={form.showNextPlan !== false} onChange={(e) => set("showNextPlan", e.target.checked)} />
+                      在项目详情页展示后续计划
+                    </label>
                   </div>
 
                   {/* 平台链路：动态添加 */}
@@ -482,6 +488,10 @@ export default function AdminPage() {
                     <button type="button" className="btn-secondary" onClick={addLink}>
                       ＋ 添加链接
                     </button>
+                    <label className="field-check" style={{ marginTop: 10 }}>
+                      <input type="checkbox" checked={form.showLinks !== false} onChange={(e) => set("showLinks", e.target.checked)} />
+                      在项目详情页展示平台链接
+                    </label>
                   </div>
                 </div>
               </div>

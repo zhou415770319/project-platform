@@ -144,25 +144,27 @@ export default function ProjectDetailPage() {
           </div>
         )}
 
-        <div className="link-block">
-          <h3>配套平台链路</h3>
-          {project.links && project.links.length > 0 ? (
-            <div className="links">
-              {project.links.map((l, i) => (
-                <div className="link-item" key={i}>
-                  <span className="label">{l.platform}</span>
-                  <a href={l.url} target="_blank" rel="noopener noreferrer">
-                    {l.title || l.url}
-                  </a>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="hint">该平台链路将在后台配置后展示。</p>
-          )}
-        </div>
+        {project.showLinks !== false && (
+          <div className="link-block">
+            <h3>配套平台链路</h3>
+            {project.links && project.links.length > 0 ? (
+              <div className="links">
+                {project.links.map((l, i) => (
+                  <div className="link-item" key={i}>
+                    <span className="label">{l.platform}</span>
+                    <a href={l.url} target="_blank" rel="noopener noreferrer">
+                      {l.title || l.url}
+                    </a>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="hint">该平台链路将在后台配置后展示。</p>
+            )}
+          </div>
+        )}
 
-        {project.nextPlan && (
+        {project.nextPlan && project.showNextPlan !== false && (
           <div className="link-block">
             <h3>后续计划</h3>
             <p style={{ fontSize: 15, color: "#cdd4df" }}>{project.nextPlan}</p>
