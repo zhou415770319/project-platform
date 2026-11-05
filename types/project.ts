@@ -14,6 +14,10 @@ export interface PlatformLink {
   title: string;
   /** 链接地址 */
   url: string;
+  /** 描述（可选） */
+  desc?: string;
+  /** 是否在详情页展示（默认 true 展示） */
+  show?: boolean;
 }
 
 /** 项目进度状态枚举：立项 / 功能开发 / MVP版 / 完整版 */

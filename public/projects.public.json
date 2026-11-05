@@ -37,12 +37,16 @@
       {
         "platform": "GitHub",
         "title": "源码仓库",
-        "url": "https://github.com/zhou415770319/life-os-platform"
+        "url": "https://github.com/zhou415770319/life-os-platform",
+        "show": true,
+        "desc": "主平台仓库：看板、运行时与插件机制"
       },
       {
         "platform": "GitHub",
         "title": "插件仓库",
-        "url": "https://github.com/zhou415770319/life-os-plugins"
+        "url": "https://github.com/zhou415770319/life-os-plugins",
+        "show": true,
+        "desc": "内置插件与插件开发指南"
       }
     ],
     "shortDesc": "以插件为核心的个人管理平台，插件化扩展 + 全局 AI 助手（本地 BYOK），对接飞书多维表格 + 影刀 RPA + 本地 Excel。已发布 v1.0.0。",
@@ -98,12 +102,16 @@
       {
         "platform": "GitHub",
         "title": "开源仓库",
-        "url": "https://github.com/zhou415770319/child_points_uni"
+        "url": "https://github.com/zhou415770319/child_points_uni",
+        "show": true,
+        "desc": "uni-app 移动端完整源码"
       },
       {
         "platform": "微信公众号",
         "title": "说明文档",
-        "url": "https://mp.weixin.qq.com/s/fwhBXbWZYBNVzYYAXmfx1A"
+        "url": "https://mp.weixin.qq.com/s/fwhBXbWZYBNVzYYAXmfx1A",
+        "show": true,
+        "desc": "技术文档发布在微信公众号"
       }
     ],
     "shortDesc": "面向儿童的积分任务系统移动端，家长端 + 儿童端双角色，基于飞书多维表格存储（零服务器、免费方案），Coze 工作流 AI 自动建任务。",
@@ -163,7 +171,9 @@
       {
         "platform": "GitHub",
         "title": "开源仓库",
-        "url": "https://github.com/zhou415770319/knowledge_colosseum"
+        "url": "https://github.com/zhou415770319/knowledge_colosseum",
+        "show": true,
+        "desc": "Vue3 + Node 云函数完整源码"
       }
     ],
     "shortDesc": "面向儿童的游戏化知识测试平台，AI 自动生成闯关题库 + 多游戏模板 + 模板市场，飞书多维表格存储，个人独立开发。",

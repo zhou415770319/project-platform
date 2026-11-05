@@ -347,6 +347,24 @@ a.card:hover {
   padding: 12px 14px;
   font-size: 14px;
 }
+.link-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.link-main a {
+  color: var(--accent);
+  text-decoration: none;
+  word-break: break-all;
+}
+.link-main a:hover {
+  text-decoration: underline;
+}
+.link-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+}
 .link-item .label {
   color: var(--text-dim);
   flex: 0 0 90px;
@@ -664,8 +682,17 @@ a.card:hover {
 .link-manage {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 10px;
+}
+.link-item-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-soft);
 }
 .link-manage-row {
   display: flex;
@@ -680,13 +707,21 @@ a.card:hover {
   flex-shrink: 0;
 }
 .link-manage-row .link-title {
-  flex: 1 1 40%;
+  flex: 1 1 30%;
 }
 .link-manage-row .link-url {
-  flex: 1 1 60%;
+  flex: 1 1 50%;
+}
+.link-manage-row .field-check {
+  margin: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .link-manage-row .btn-danger {
   flex-shrink: 0;
+}
+.link-item-edit > .field {
+  margin: 0;
 }
 
 /* ===== 状态/通用 ===== */

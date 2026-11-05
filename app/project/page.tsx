@@ -149,14 +149,19 @@ export default function ProjectDetailPage() {
             <h3>配套平台链路</h3>
             {project.links && project.links.length > 0 ? (
               <div className="links">
-                {project.links.map((l, i) => (
-                  <div className="link-item" key={i}>
-                    <span className="label">{l.platform}</span>
-                    <a href={l.url} target="_blank" rel="noopener noreferrer">
-                      {l.title || l.url}
-                    </a>
-                  </div>
-                ))}
+                {project.links.map((l, i) =>
+                  l.show === false ? null : (
+                    <div className="link-item" key={i}>
+                      <span className="label">{l.platform}</span>
+                      <div className="link-main">
+                        <a href={l.url} target="_blank" rel="noopener noreferrer">
+                          {l.title || l.url}
+                        </a>
+                        {l.desc && <span className="link-desc">{l.desc}</span>}
+                      </div>
+                    </div>
+                  )
+                )}
               </div>
             ) : (
               <p className="hint">该平台链路将在后台配置后展示。</p>

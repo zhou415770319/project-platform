@@ -188,9 +188,13 @@ export default function AdminPage() {
   const addLink = () =>
     setForm((f) => ({
       ...f,
-      links: [...(f.links ?? []), { platform: "GitHub", title: "", url: "" }],
+      links: [...(f.links ?? []), { platform: "GitHub", title: "", url: "", show: true }],
     }));
-  const setLink = (i: number, field: keyof PlatformLink, value: string) =>
+  const setLink = <K extends keyof PlatformLink>(
+    i: number,
+    field: K,
+    value: PlatformLink[K]
+  ) =>
     setForm((f) => ({
       ...f,
       links: (f.links ?? []).map((l, idx) =>
@@ -456,31 +460,47 @@ export default function AdminPage() {
                     {form.links && form.links.length > 0 && (
                       <div className="link-manage">
                         {form.links.map((l, i) => (
-                          <div className="link-manage-row" key={i}>
-                            <select
-                              className="field link-select"
-                              value={l.platform}
-                              onChange={(e) => setLink(i, "platform", e.target.value)}
-                            >
-                              {PLATFORMS.map((p) => (
-                                <option key={p} value={p}>{p}</option>
-                              ))}
-                            </select>
+                          <div className="link-item-edit" key={i}>
+                            <div className="link-manage-row">
+                              <select
+                                className="field link-select"
+                                value={l.platform}
+                                onChange={(e) => setLink(i, "platform", e.target.value)}
+                              >
+                                {PLATFORMS.map((p) => (
+                                  <option key={p} value={p}>{p}</option>
+                                ))}
+                              </select>
+                              <input
+                                className="field link-title"
+                                value={l.title}
+                                placeholder="标题，如：源码仓库"
+                                onChange={(e) => setLink(i, "title", e.target.value)}
+                              />
+                              <input
+                                className="field link-url"
+                                value={l.url}
+                                placeholder="https://…"
+                                onChange={(e) => setLink(i, "url", e.target.value)}
+                              />
+                              <label className="field-check" title="是否在详情页展示">
+                                <input
+                                  type="checkbox"
+                                  checked={l.show !== false}
+                                  onChange={(e) => setLink(i, "show", e.target.checked)}
+                                />
+                                展示
+                              </label>
+                              <button type="button" className="btn-danger" onClick={() => removeLink(i)}>
+                                删除
+                              </button>
+                            </div>
                             <input
-                              className="field link-title"
-                              value={l.title}
-                              placeholder="标题，如：源码仓库"
-                              onChange={(e) => setLink(i, "title", e.target.value)}
+                              className="field"
+                              value={l.desc ?? ""}
+                              placeholder="描述（可选），如：技术文档发布在微信公众号"
+                              onChange={(e) => setLink(i, "desc", e.target.value)}
                             />
-                            <input
-                              className="field link-url"
-                              value={l.url}
-                              placeholder="https://…"
-                              onChange={(e) => setLink(i, "url", e.target.value)}
-                            />
-                            <button type="button" className="btn-danger" onClick={() => removeLink(i)}>
-                              删除
-                            </button>
                           </div>
                         ))}
                       </div>
