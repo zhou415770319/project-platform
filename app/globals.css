@@ -531,6 +531,21 @@ a.card:hover {
   overflow-y: auto;
   flex: 1 1 auto;
   min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 148, 158, 0.45) transparent;
+}
+.modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+.modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.modal-body::-webkit-scrollbar-thumb {
+  background: rgba(139, 148, 158, 0.45);
+  border-radius: 4px;
+}
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 148, 158, 0.7);
 }
 .modal-footer {
   padding: 16px 22px;

@@ -34,7 +34,7 @@ function emptyForm(): Project {
 }
 
 /** 读取图片并压缩为 dataURL（限制最大边长，控制体积） */
-function fileToDataUrl(file: File, maxDim = 1280, quality = 0.85): Promise<string> {
+function fileToDataUrl(file: File, maxDim = 1200, quality = 0.82): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -73,6 +73,8 @@ export default function AdminPage() {
   const [form, setForm] = useState<Project>(emptyForm());
   // 弹框内图片灯箱预览
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
+  // 截图上传处理中
+  const [uploading, setUploading] = useState(false);
 
   // 鉴权 + 加载全部数据
   useEffect(() => {
@@ -136,21 +138,28 @@ export default function AdminPage() {
     }
   };
 
-  // —— 截图：上传 / 删除 / 改名 / 手动URL ——
+  // —— 截图：上传（并行处理、逐张即时显示）/ 删除 / 改名 / 手动URL ——
   const onUploadShots = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     e.target.value = "";
-    for (const file of files) {
+    if (!files.length) return;
+    setUploading(true);
+    const jobs = files.map(async (file) => {
       try {
         const src = await fileToDataUrl(file);
         setForm((f) => ({
           ...f,
-          screenshots: [...(f.screenshots ?? []), { src, name: file.name.replace(/\.[^.]+$/, "") }],
+          screenshots: [
+            ...(f.screenshots ?? []),
+            { src, name: file.name.replace(/\.[^.]+$/, "") },
+          ],
         }));
       } catch {
         alert(`上传失败：${file.name}`);
       }
-    }
+    });
+    await Promise.all(jobs);
+    setUploading(false);
   };
   const removeShot = (i: number) =>
     setForm((f) => ({
@@ -354,8 +363,8 @@ export default function AdminPage() {
                   <div className="full">
                     <label>项目截图（支持上传本地图片、手动填 URL；每张可写说明、可删除）</label>
                     <div className="shot-upload-row">
-                      <button type="button" className="btn-secondary" onClick={() => shotFileRef.current?.click()}>
-                        📁 上传截图
+                      <button type="button" className="btn-secondary" onClick={() => shotFileRef.current?.click()} disabled={uploading}>
+                        {uploading ? "⏳ 处理图片中…" : "📁 上传截图"}
                       </button>
                       <input
                         className="field"
